@@ -105,7 +105,7 @@ class Bottleneck(Module):
         x = self.conv2(x)
 
         if self.connectFlag:
-            x += identity
+            x = x + identity
 
         return x
 
