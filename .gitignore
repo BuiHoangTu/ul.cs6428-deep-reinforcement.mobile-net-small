@@ -1,5 +1,9 @@
 # data folder
 tiny-imagenet
+blanchon
+
+# pycache
+__pycache__
 
 # dev test files 
 test.*
