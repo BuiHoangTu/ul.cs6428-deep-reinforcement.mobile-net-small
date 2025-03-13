@@ -21,13 +21,15 @@ class SqueezeExcite(Module):
     def __init__(self, expand_channels, reduction=SE_REDUCTION) -> None:
         super().__init__()
 
+        compressed_channels = expand_channels // reduction
+
         self.fcR = Sequential(
-            Linear(expand_channels, expand_channels // reduction, bias=False),
+            Linear(expand_channels, compressed_channels, bias=False),
             ReLU(),
         )
 
         self.fcHS = Sequential(
-            Linear(expand_channels // reduction, expand_channels, bias=False),
+            Linear(compressed_channels, expand_channels, bias=False),
             Hardsigmoid(),
         )
 
