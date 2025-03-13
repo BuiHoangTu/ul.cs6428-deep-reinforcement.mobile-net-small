@@ -125,7 +125,7 @@ class CustomMobileNetSmall(Module):
         self.n_classes = n_classes
 
         self.pConv1 = Sequential(
-            Conv2d(3, 16, kernel_size=3, stride=2),
+            Conv2d(3, 16, kernel_size=3, stride=2, padding=1, bias=False),
             BatchNorm2d(16, eps=bn_eps, momentum=bn_momentum),
             Hardswish(),
         )
