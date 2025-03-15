@@ -9,6 +9,7 @@ from torch.nn import (
     BatchNorm2d,
     Linear,
     Hardsigmoid,
+    Flatten,
 )
 
 
@@ -26,7 +27,6 @@ def createConv2dBlock(
     padding=0,
     groups=1,
     bias=False,
-    use_bn=True,
     bn_eps=BN_EPS,
     bn_momentum=BN_MOMENTUM,
 ):
@@ -41,7 +41,6 @@ def createConv2dBlock(
         padding (int, optional): _description_. Defaults to 0.
         groups (int, optional): _description_. Defaults to 1.
         bias (bool, optional): _description_. Defaults to False.
-        use_bn (bool, optional): Does the block use batch norm. Defaults to True.
         bn_eps (int, optional): eps of batch norm. Defaults to BN_EPS.
         bn_momentum (int, optional): momentumn of batch norm. Defaults to BN_MOMENTUM.
 
@@ -61,8 +60,7 @@ def createConv2dBlock(
             bias=bias,
         )
     )
-    if use_bn:
-        layer.append(BatchNorm2d(out_channels, eps=bn_eps, momentum=bn_momentum))
+    layer.append(BatchNorm2d(out_channels, eps=bn_eps, momentum=bn_momentum))
     if activation is not None:
         layer.append(activation)
     return layer
@@ -225,23 +223,30 @@ class CustomMobileNetSmall(Module):
             Hardswish(),
         )
 
-        self.conv3 = createConv2dBlock(
-            576,
-            1024,
-            kernel_size=1,
-            stride=1,
-            activation=Hardswish(),
-            use_bn=False,
+        # self.conv3 = createConv2dBlock(
+        #     576,
+        #     1024,
+        #     kernel_size=1,
+        #     stride=1,
+        #     activation=Hardswish(),
+        #     use_bn=False,
+        # )
+        # This has the same effect since the input is Cx1x1
+        self.conv3 = Sequential(
+            Flatten(),
+            Linear(576, 1024),
+            Hardswish(),
         )
 
-        self.classifier = createConv2dBlock(
-            1024,
-            n_classes,
-            kernel_size=1,
-            stride=1,
-            activation=None,
-            use_bn=False,
-        )
+        # self.classifier = createConv2dBlock(
+        #     1024,
+        #     n_classes,
+        #     kernel_size=1,
+        #     stride=1,
+        #     activation=None,
+        #     use_bn=False,
+        # )
+        self.classifier = Linear(1024, n_classes)
 
     def forward(self, x):
         x = self.conv1(x)
