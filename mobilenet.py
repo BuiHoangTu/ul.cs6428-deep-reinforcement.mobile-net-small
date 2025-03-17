@@ -24,7 +24,6 @@ def createConv2dBlock(
     kernel_size,
     activation,
     stride=1,
-    padding=0,
     groups=1,
     bias=False,
     bn_eps=BN_EPS,
@@ -47,6 +46,8 @@ def createConv2dBlock(
     Returns:
         Sequential: a sequential block of Conv2d, BatchNorm2d and activation
     """
+    
+    padding = kernel_size // 2  # same padding
 
     layer = Sequential()
     layer.append(
@@ -111,13 +112,6 @@ class Bottleneck(Module):
         self.use_se = use_se
         self.connectFlag = in_channels == out_channels and stride == 1
 
-        if kernel_size == 3:
-            padding = 1
-        elif kernel_size == 5:
-            padding = 2
-        else:
-            raise ValueError("Invalid kernel size, 3 and 5 only supported")
-
         self.conv1 = createConv2dBlock(
             in_channels,
             expand_channels,
@@ -134,7 +128,6 @@ class Bottleneck(Module):
             expand_channels,
             kernel_size=kernel_size,
             stride=stride,
-            padding=padding,
             groups=expand_channels,  # depthwise
             activation=activation,
             bn_eps=bn_eps,
