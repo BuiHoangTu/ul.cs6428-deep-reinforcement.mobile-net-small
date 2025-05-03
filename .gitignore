@@ -1,9 +1,3 @@
-# data folder
-/zh-plus/tiny-imagenet
-/blanchon/EuroSAT_MSI
-/blanchon/EuroSAT_RGB
-/slegroux/tiny-imagenet-200-clean
-
 # pycache
 __pycache__
 
