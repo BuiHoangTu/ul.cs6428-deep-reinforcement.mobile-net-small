@@ -1,5 +1,8 @@
 # pycache
 __pycache__
 
+# IDEs
+.vscode/
+
 # dev test files 
 test.*
